@@ -23,7 +23,6 @@ Ok, lets proceed by defining  some of the things that we will like to keep track
 
 ```Sophia
 contract ChatContract=
-
  record state={
   usersProfile:map(address,usersProfile),
   usersFriend:map(address,list(address)),

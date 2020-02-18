@@ -78,8 +78,11 @@ Then lets also create a `getFriendRequests` function that will return the list o
     let newFriendRequestList=List.filter((x)=>x!=newFriendsAddress,friendRequestList)
 
     let usersFriendList=Map.lookup_default(Call.caller,state.usersFriend,[])
+    let requestSendersFriendList=Map.lookup_default(newFriendsAddress,state.usersFriend,[])
+    let newRequestSendersFriendList=Call.caller::requestSendersFriendList
     let newUsersFriendList=newFriendsAddress::usersFriendList
-    put(state{usersFriend[Call.caller]=newUsersFriendList,friendRequests[Call.caller]=newFriendRequestList})
+    let newUsersFriendMap=state.usersFriend{[Call.caller]=newUsersFriendList,[newFriendsAddress]=newRequestSendersFriendList}
+    put(state{usersFriend=newUsersFriendMap,friendRequests[Call.caller]=newFriendRequestList})
  ```
 So lets also add a function that will allow a user to get the list of friends he has
 

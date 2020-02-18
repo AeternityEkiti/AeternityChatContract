@@ -19,3 +19,17 @@ contract ChatContract=
   }
 
 ```
+Ok, lets proceed by defining  some of the things that we will like to keep track of through out the lifetime of our contract, such as each `users friends`, `mesages sent to the user`, the `friend requests` a user has received and a `users profile`, we will store all this things in our state
+
+```Sophia
+contract ChatContract=
+
+ record state={
+  usersProfile:map(address,usersProfile),
+  usersFriend:map(address,list(address)),
+  usersMessages:map(address,map(address,list(string))),
+  friendRequests:map(address,list(address)),
+  newestFriend:map(address,address)
+  }
+  
+```

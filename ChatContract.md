@@ -47,7 +47,7 @@ We will also create the function that will return a particular users profile, we
     Map.lookup_default(Call.caller,state.usersProfile,{name="",discipline="",status="",dpUrl=""})  
 
 ```
-Next, lets create a function that will allow a user to send a friend request to another user using his address, this function will take in the other users address, and store it in the field of the present users friend Requests  Map which is in the state.
+Next, lets create a function that will allow a user to send a friend request to another user using his address, this function will take in the other users address, and store it in the field of the present users friend Requests  Map which is in the state. This function will also reply on two helper functions, `modifyFriendsRequest` and `onlyOneFriendRequest`, `onlyOneFriendRequest` is called when the other users list of friend requests is empty and `modifyFriendsRequest` is called when the user already has a list of friend requests
 
 ```Sophia
  stateful entrypoint sendFriendRequest(friendsAddress':address)=
@@ -64,8 +64,26 @@ Next, lets create a function that will allow a user to send a friend request to 
  stateful function onlyOneFriendRequest(friendsAddress':address,newFriendList:list(address))=
      put(state{friendRequests[friendsAddress']=newFriendList})
      newFriendList
-     
-
+    
 ```
+Then lets also create a `getFriendRequests` function that will return the list of friends a person has presently
+```Sophia
+ entrypoint getFriendRequest()=
+    Map.lookup_default(Call.caller,state.friendRequests,[])
+```
+ So lets crate a function called `acceptFriendRequest` that will take in an address, remove it from the present users list of friend requests and add it to the present users list of friends and also add it to the user who sent the friend request's list of friends.
+ ```Sophia
+ stateful entrypoint acceptFriendRequest(newFriendsAddress:address)=
+    let friendRequestList=Map.lookup_default(Call.caller,state.friendRequests,[])  
+    let newFriendRequestList=List.filter((x)=>x!=newFriendsAddress,friendRequestList)
 
+    let usersFriendList=Map.lookup_default(Call.caller,state.usersFriend,[])
+    let newUsersFriendList=newFriendsAddress::usersFriendList
+    put(state{usersFriend[Call.caller]=newUsersFriendList,friendRequests[Call.caller]=newFriendRequestList})
+ ```
+So lets also add a function that will allow a user to get the list of friends he has
 
+```Sophia
+ entrypoint getUsersFriend()=
+    Map.lookup_default(Call.caller,state.usersFriend,[])
+```

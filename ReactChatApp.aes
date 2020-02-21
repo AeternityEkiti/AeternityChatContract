@@ -83,7 +83,7 @@ contract ReactChatApp=
         put(state{usersMessages=newUpdatedState})
   
   entrypoint getMessages()=
-    state.usersMessages[Call.caller]
+    Map.lookup_default(Call.caller,state.usersMessages,{})
   
   
   
